@@ -7,18 +7,17 @@ variables:
 stages:
 - stage: 'Build'
   displayName: 'Build the web application'
-  jobs:
+  jobs: 
   - job: 'Build'
-    displayName: 'Build Job'
+    displayName: 'Build job'
     pool:
       vmImage: 'ubuntu-20.04'
       demands:
       - npm
 
     variables:
-      buildConfiguration: 'Release'
       wwwrootDir: 'Tailspin.SpaceGame.Web/wwwroot'
-      dotnetSdkVersion: '5.x'
+      dotnetSdkVersion: '6.x'
 
     steps:
     - task: UseDotNet@2
@@ -65,8 +64,9 @@ stages:
 
     - publish: '$(Build.ArtifactStagingDirectory)'
       artifact: drop
-- stage: 'Deply'
-  displayName: 'Deploy Webapp'
+
+- stage: 'Deploy'
+  displayName: 'Deploy the web application'
   dependsOn: Build
   jobs:
   - deployment: Deploy
@@ -86,4 +86,4 @@ stages:
             inputs:
               azureSubscription: 'Resource Manager - Tailspin - Space Game'
               appName: '$(WebAppName)'
-              package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip'  
+              package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip'
